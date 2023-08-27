@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
-from models.activity import Activity
-from models.user import User
-from models.base import Base
+from api.models.activity import Activity
+from api.models.user import User
+from api.models.base import Base
 
 db_url = "mysql+mysqlconnector://root:password@localhost:3306/api"
 
