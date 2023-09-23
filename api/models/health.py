@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey, Column, String, Integer
 from api.models.base import Base
 
 class Health(Base):
-    __table__ = "health"
+    __tablename__ = "health"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     nickname = Column(String(50), ForeignKey("user.nickname"))
