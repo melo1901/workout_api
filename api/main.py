@@ -1,11 +1,7 @@
 from fastapi.applications import FastAPI
-from fastapi.routing import APIRouter
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-db_url = "postgresql://postgres:postgres@localhost:5432/postgres"
-engine = create_engine(db_url, echo=True)
-Session = sessionmaker(bind=engine)
-session = Session()
+from api.endpoints.activity import router as activity_router
+from api.endpoints.user import router as user_router
 
 app = FastAPI()
+app.include_router(activity_router, prefix="/activity", tags=["activity"])
+app.include_router(user_router, prefix="/user", tags=["user"])

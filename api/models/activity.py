@@ -1,5 +1,7 @@
 from sqlalchemy import ForeignKey, Column, String, Date, Integer
 from api.models.base import Base
+from pydantic import BaseModel
+from datetime import date
 
 class Activity(Base):
     __tablename__ = "activity"
@@ -21,3 +23,24 @@ class Activity(Base):
     def __repr__(self):
         return "<Activity(nickname='%s', activity='%s', duration='%s', kcal_burnt='%s', date='%s')>" % (
             self.nickname, self.activity, self.duration, self.kcal_burnt, self.date)
+
+class ActivityCreate(BaseModel):
+    nickname: str
+    activity: str
+    duration: str
+    kcal_burnt: int
+    date: date
+
+class ActivityUpdate(BaseModel):
+    activity: str
+    duration: str
+    kcal_burnt: int
+    date: date
+
+class ActivityResponse(BaseModel):
+    id: int
+    nickname: str
+    activity: str
+    duration: str
+    kcal_burnt: int
+    date: date

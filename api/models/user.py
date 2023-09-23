@@ -1,5 +1,7 @@
 from sqlalchemy import Column, String, Date
 from api.models.base import Base
+from pydantic import BaseModel
+from datetime import date
 
 class User(Base):
     __tablename__ = "user"
@@ -20,4 +22,22 @@ class User(Base):
     def __repr__(self):
         return "<User(nickname='%s', name='%s', surname='%s', email='%s', join_date='%s')>" % (
             self.nickname, self.name, self.surname, self.email, self.join_date)
+    
+class UserCreate(BaseModel):
+    nickname: str
+    name: str
+    surname: str
+    email: str
+    join_date: date
 
+class UserUpdate(BaseModel):
+    name: str
+    surname: str
+    email: str
+
+class UserResponse(BaseModel):
+    nickname: str
+    name: str
+    surname: str
+    email: str
+    join_date: date

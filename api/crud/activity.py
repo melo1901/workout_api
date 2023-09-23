@@ -1,10 +1,11 @@
 from api.models.activity import Activity
+from api.database import session
 
-def create_activity(activity, session):
-    new_activity = Activity(**activity)
+def create_activity(activity):
+    new_activity = Activity(**activity.model_dump())
     session.add(new_activity)
     session.commit()
-    return new_activity
+    return activity
 
 
 def get_activity(activity_id, session):
