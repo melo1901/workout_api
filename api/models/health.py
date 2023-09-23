@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey, Column, String, Integer
-from base import Base
+from api.models.base import Base
 
 class Health(Base):
     __table__ = "health"

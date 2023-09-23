@@ -1,23 +1,18 @@
+from fastapi.applications import FastAPI
+from fastapi.routing import APIRouter
 from sqlalchemy import create_engine
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
-from api.models.activity import Activity
-from api.models.user import User
-from api.models.base import Base
 
-db_url = "mysql+mysqlconnector://root:password@localhost:3306/api"
+db_url = "postgresql://postgres:postgres@localhost:5432/test"
+engine = create_engine(db_url, echo=True)
+Session = sessionmaker(bind=engine)
+activity = {
+    "nickname": "test",
+    "activity": "test3",
+    "duration": "test2",
+    "kcal_burnt": 5,
+    "date": "2018-01-02",
+}
+session = Session()
 
-try:
-    engine = create_engine(db_url, echo=True)
-    Base.metadata.create_all(engine)
-    
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    
-    user = User(nickname="test", name="Test", surname="Test", email="test", join_date="2018-01-01")
-    activity = Activity(nickname="test", activity="test2", duration="test2", kcal_burnt=2, date="2018-01-02")
-    session.add(activity)
-    session.commit()
-    
-except SQLAlchemyError as e:
-    print("Connection failed: ", e)
+app = FastAPI()
