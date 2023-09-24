@@ -2,6 +2,7 @@ from sqlalchemy import ForeignKey, Column, String, Date, Integer
 from api.models.base import Base
 from pydantic import BaseModel
 from datetime import date
+from sqlalchemy.orm import relationship
 
 class Activity(Base):
     __tablename__ = "activity"
@@ -12,6 +13,7 @@ class Activity(Base):
     duration = Column(String(50))
     kcal_burnt = Column(Integer)
     date = Column(Date)
+    user = relationship("User", back_populates="activities")
     
     def __init__(self, nickname, activity, duration, kcal_burnt, date):
         self.nickname = nickname

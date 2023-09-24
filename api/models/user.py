@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Date
+from sqlalchemy.orm import relationship
 from api.models.base import Base
 from pydantic import BaseModel
 from datetime import date
@@ -11,6 +12,7 @@ class User(Base):
     surname = Column(String(50))
     email = Column(String(50), unique=True)
     join_date = Column(Date)
+    activities = relationship("Activity", back_populates="user")
     
     def __init__(self, nickname, name, surname, email, join_date):
         self.nickname = nickname
