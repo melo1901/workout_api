@@ -1,8 +1,40 @@
-from api.models.user import User
+from fastapi import HTTPException
+from api.models.user import User, UserCreate, UserUpdate, UserResponse
 from api.database import session
+from sqlalchemy.exc import IntegrityError
 
-def create_user(user):
+def create_user(user: UserCreate):
     new_user = User(**user.model_dump())
-    session.add(new_user)
-    session.commit()
+    try:
+        session.add(new_user)
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        raise HTTPException(status_code=409, detail="Integrity constraint violation")
     return new_user
+
+def get_user(nickname: str) -> UserResponse:
+    user = session.query(User).filter_by(nickname=nickname).first()
+    if user:
+        return user
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+
+def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
+    user = session.query(User).filter_by(nickname=nickname).first()
+    if user:
+        for key, value in new_user_data:
+            setattr(user, key, value)
+        session.commit()
+        return user
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+def delete_user(nickname: str) -> int:
+    user = session.query(User).filter_by(nickname=nickname).first()
+    if user:
+        session.delete(user)
+        session.commit()
+        return 1
+    return 0
