@@ -4,6 +4,7 @@ from api.models.user import Users, UserCreate, UserUpdate, UserResponse
 from sqlalchemy.exc import IntegrityError
 from api.database import session
 
+
 def create_user(user: UserCreate):
     new_user = Users(**user.model_dump())
     try:
@@ -14,13 +15,14 @@ def create_user(user: UserCreate):
         raise HTTPException(status_code=409, detail="Integrity constraint violation")
     return new_user
 
+
 def get_user(nickname: str) -> UserResponse:
     user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
         return user
     else:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
 
 def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
     user = session.query(Users).filter_by(nickname=nickname).first()
@@ -31,7 +33,8 @@ def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
         return user
     else:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
+
 def delete_user(nickname: str) -> int:
     user = session.query(Users).filter_by(nickname=nickname).first()
     if user:

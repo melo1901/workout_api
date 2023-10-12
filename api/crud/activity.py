@@ -4,6 +4,7 @@ from api.models.user import Users
 from api.database import session
 from sqlalchemy.exc import IntegrityError
 
+
 def create_activity(activity: ActivityCreate):
     new_activity = Activity(**activity.model_dump())
     try:
@@ -20,13 +21,15 @@ def get_activity(activity_id: int):
     if activity:
         return activity
     raise HTTPException(status_code=404, detail="Activity not found")
-    
+
+
 def get_user_activities(user_nickname: str):
     user = session.query(Users).filter_by(nickname=user_nickname).first()
-    
+
     if user:
         return user.activities
     raise HTTPException(status_code=404, detail="User not found")
+
 
 def update_activity(activity_id: int, new_activity_data):
     activity = session.query(Activity).filter_by(id=activity_id).first()
@@ -35,6 +38,7 @@ def update_activity(activity_id: int, new_activity_data):
             setattr(activity, key, value)
         session.commit()
     return activity
+
 
 def delete_activity(activity_id: int):
     activity = session.query(Activity).filter_by(id=activity_id).first()
