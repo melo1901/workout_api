@@ -8,12 +8,12 @@ class Activity(Base):
     __tablename__ = "activity"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nickname = Column(String(50), ForeignKey("user.nickname"))
+    nickname = Column(String(50), ForeignKey("users.nickname"))
     activity = Column(String(50))
     duration = Column(String(50))
     kcal_burnt = Column(Integer)
     date = Column(Date)
-    user = relationship("User", back_populates="activities")
+    users = relationship("Users", back_populates="activities")
     
     def __init__(self, nickname, activity, duration, kcal_burnt, date):
         self.nickname = nickname

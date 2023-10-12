@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from api.models.activity import Activity, ActivityCreate
-from api.models.user import User
+from api.models.user import Users
 from api.database import session
 from sqlalchemy.exc import IntegrityError
 
@@ -22,7 +22,7 @@ def get_activity(activity_id: int):
     raise HTTPException(status_code=404, detail="Activity not found")
     
 def get_user_activities(user_nickname: str):
-    user = session.query(User).filter_by(nickname=user_nickname).first()
+    user = session.query(Users).filter_by(nickname=user_nickname).first()
     
     if user:
         return user.activities

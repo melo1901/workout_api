@@ -1,14 +1,17 @@
 import pytest
-from api.models import activity, base, health, user
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from api.models import base
+from api.database import session as session_db
+from api.database import engine as engine_db
 
-@pytest.fixture(scope="module")
-def database():
-    engine = create_engine("postgresql://postgres:postgres@localhost:5432/test")
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
+@pytest.fixture(scope="function")
+def setup_teardown():
+    engine = engine_db
     base.Base.metadata.create_all(engine)
-    
+    session = session_db
+
     yield session
+
+
+    session.rollback()
+    session.close()
+    base.Base.metadata.drop_all(engine)

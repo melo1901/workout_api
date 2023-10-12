@@ -1,10 +1,11 @@
+import os
 from fastapi import HTTPException
-from api.models.user import User, UserCreate, UserUpdate, UserResponse
-from api.database import session
+from api.models.user import Users, UserCreate, UserUpdate, UserResponse
 from sqlalchemy.exc import IntegrityError
+from api.database import session
 
 def create_user(user: UserCreate):
-    new_user = User(**user.model_dump())
+    new_user = Users(**user.model_dump())
     try:
         session.add(new_user)
         session.commit()
@@ -14,7 +15,7 @@ def create_user(user: UserCreate):
     return new_user
 
 def get_user(nickname: str) -> UserResponse:
-    user = session.query(User).filter_by(nickname=nickname).first()
+    user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
         return user
     else:
@@ -22,7 +23,7 @@ def get_user(nickname: str) -> UserResponse:
     
 
 def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
-    user = session.query(User).filter_by(nickname=nickname).first()
+    user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
         for key, value in new_user_data:
             setattr(user, key, value)
@@ -32,7 +33,7 @@ def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
         raise HTTPException(status_code=404, detail="User not found")
     
 def delete_user(nickname: str) -> int:
-    user = session.query(User).filter_by(nickname=nickname).first()
+    user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
         session.delete(user)
         session.commit()

@@ -1,10 +1,24 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from api.models import base, user, health, activity
+from dotenv import load_dotenv
 
-db_url = "postgresql://postgres:postgres@localhost:5432/postgres"
-engine = create_engine(db_url)
+load_dotenv()
 
-Session = sessionmaker(bind=engine)
-session = Session()
-base.Base.metadata.create_all(engine)
+
+if os.getenv("ENVIRONMENT") == "test":
+    db_url = os.getenv("test_db")
+    engine = create_engine(db_url)
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+else:
+    db_url = os.getenv("db")
+    engine = create_engine(db_url)
+
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+if os.getenv("ENVIRONMENT") != "test":
+    base.Base.metadata.create_all(engine)

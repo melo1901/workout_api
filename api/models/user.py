@@ -4,15 +4,15 @@ from api.models.base import Base
 from pydantic import BaseModel
 from datetime import date
 
-class User(Base):
-    __tablename__ = "user"
+class Users(Base):
+    __tablename__ = "users"
     
     nickname = Column(String(50), unique=True, primary_key=True)
     name = Column(String(50))
     surname = Column(String(50))
     email = Column(String(50), unique=True)
     join_date = Column(Date)
-    activities = relationship("Activity", back_populates="user")
+    activities = relationship("Activity", back_populates="users")
     
     def __init__(self, nickname, name, surname, email, join_date):
         self.nickname = nickname
@@ -22,7 +22,7 @@ class User(Base):
         self.join_date = join_date
         
     def __repr__(self):
-        return "<User(nickname='%s', name='%s', surname='%s', email='%s', join_date='%s')>" % (
+        return "<Users(nickname='%s', name='%s', surname='%s', email='%s', join_date='%s')>" % (
             self.nickname, self.name, self.surname, self.email, self.join_date)
     
 class UserCreate(BaseModel):

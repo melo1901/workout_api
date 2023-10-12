@@ -6,7 +6,7 @@ class Health(Base):
     __tablename__ = "health"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nickname = Column(String(50), ForeignKey("user.nickname"))
+    nickname = Column(String(50), ForeignKey("users.nickname"))
     blood_pressure = Column(String(50))
     pulse = Column(Integer)
     
@@ -34,5 +34,5 @@ class HealthUpdate(HealthBase):
 class Health(HealthBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
