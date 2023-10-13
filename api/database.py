@@ -20,5 +20,4 @@ else:
     Session = sessionmaker(bind=engine)
     session = Session()
 
-if os.getenv("ENVIRONMENT") != "test":
-    base.Base.metadata.create_all(engine)
+base.Base.metadata.create_all(engine)

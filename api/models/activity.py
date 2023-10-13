@@ -1,6 +1,7 @@
+from typing import Optional
 from sqlalchemy import ForeignKey, Column, String, Date, Integer
 from api.models.base import Base
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import date
 from sqlalchemy.orm import relationship
 
@@ -30,7 +31,7 @@ class Activity(Base):
         )
 
 
-class ActivityCreate(BaseModel):
+class ActivityBase(BaseModel):
     nickname: str
     activity: str
     duration: str
@@ -38,11 +39,19 @@ class ActivityCreate(BaseModel):
     date: date
 
 
-class ActivityUpdate(BaseModel):
-    activity: str
-    duration: str
-    kcal_burnt: int
-    date: date
+class ActivityCreate(ActivityBase):
+    pass
+
+
+class ActivityUpdateSchema(BaseModel):
+    activity: Optional[str] = None
+    duration: Optional[str] = None
+    kcal_burnt: Optional[int] = None
+    date: Optional[date] = None
+
+
+class ActivityUpdate(ActivityUpdateSchema):
+    pass
 
 
 class ActivityResponse(BaseModel):

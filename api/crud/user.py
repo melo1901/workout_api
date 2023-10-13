@@ -27,7 +27,7 @@ def get_user(nickname: str) -> UserResponse:
 def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
     user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
-        for key, value in new_user_data:
+        for key, value in new_user_data.model_dump(exclude_unset=True).items():
             setattr(user, key, value)
         session.commit()
         return user
