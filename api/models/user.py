@@ -50,6 +50,7 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
+    nickname: Optional[str] = Field(default=None)
     name: Optional[str] = Field(default=None)
     surname: Optional[str] = Field(default=None)
     height: Optional[float] = Field(default=None)

@@ -8,8 +8,8 @@ router = APIRouter()
 
 
 @router.post("", response_model=(UserCreate | None))
-async def create_user(activity: UserCreate) -> UserCreate | None:
-    return crud.create_user(activity)
+async def create_user(user: UserCreate) -> UserCreate | None:
+    return crud.create_user(user)
 
 
 @router.get("/{nickname}", response_model=(UserResponse))
