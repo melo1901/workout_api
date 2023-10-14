@@ -44,7 +44,7 @@ class HealthCreate(HealthBase):
     pass
 
 
-class HealthUpdate(HealthBase):
+class HealthUpdate(BaseModel):
     nickname: Optional[str] = Field(default=None)
     blood_pressure: Optional[str] = Field(default=None)
     pulse: Optional[int] = Field(default=None)

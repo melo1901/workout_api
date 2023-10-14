@@ -1,6 +1,6 @@
 from fastapi.routing import APIRouter
 from api.crud import health as crud
-from api.models.health import HealthCreate, HealthResponse
+from api.models.health import HealthCreate, HealthResponse, HealthUpdate
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ async def get_health(health_id: int) -> HealthCreate:
 
 
 @router.put("/{health_id}", response_model=HealthCreate)
-async def update_health(health_id: int, new_health_data: HealthCreate) -> HealthCreate:
+async def update_health(health_id: int, new_health_data: HealthUpdate) -> HealthCreate:
     return await crud.update_health(health_id, new_health_data)
 
 

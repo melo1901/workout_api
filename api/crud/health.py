@@ -28,7 +28,8 @@ async def update_health(health_id: int, new_health_data: HealthUpdate):
         for key, value in new_health_data.model_dump(exclude_unset=True).items():
             setattr(health, key, value)
         session.commit()
-    return health
+        return health
+    raise HTTPException(status_code=404, detail="Health record not found")
 
 
 async def delete_health(health_id: int):

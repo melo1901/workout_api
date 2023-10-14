@@ -26,7 +26,6 @@ async def get_activity(activity_id: int):
 
 async def get_user_activities(user_nickname: str):
     user = session.query(Users).filter_by(nickname=user_nickname).all()
-
     if user:
         return session.query(Activity).filter_by(nickname=user_nickname).all()
     raise HTTPException(status_code=404, detail="User not found")
