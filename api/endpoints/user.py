@@ -9,19 +9,19 @@ router = APIRouter()
 
 @router.post("", response_model=(UserCreate | None))
 async def create_user(user: UserCreate) -> UserCreate | None:
-    return crud.create_user(user)
+    return await crud.create_user(user)
 
 
 @router.get("/{nickname}", response_model=(UserResponse))
 async def get_user(nickname: str) -> UserResponse:
-    return crud.get_user(nickname)
+    return await crud.get_user(nickname)
 
 
 @router.put("/{nickname}", response_model=UserUpdate)
 async def update_user(nickname: str, user: UserUpdate) -> UserUpdate:
-    return crud.update_user(nickname, user)
+    return await crud.update_user(nickname, user)
 
 
 @router.delete("/{nickname}", response_model=int)
 async def delete_user(nickname: str) -> int:
-    return crud.delete_user(nickname)
+    return await crud.delete_user(nickname)

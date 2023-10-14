@@ -22,40 +22,51 @@ def test_create_user():
         "join_date": "2023-01-01",
     }
     user = UserCreate(**user_data)
-    create_user(user)
+    return create_user(user)
 
 
 @pytest.fixture
-def test_create_activity(setup_teardown, test_create_user):
+async def test_create_activity(setup_teardown, test_create_user):
     activity_data = {
         "nickname": "testuser",
         "activity": "Running",
-        "duration": "30 minutes",
-        "kcal_burnt": 300,
+        "duration": "00:30:00",
+        "kcal_burned": 300,
         "date": "2023-01-01",
     }
     activity = ActivityCreate(**activity_data)
     return create_activity(activity)
 
 
-def test_create_activity_(setup_teardown, test_create_activity):
-    created_activity = test_create_activity
+@pytest.mark.anyio
+async def test_create_activity_(setup_teardown, test_create_activity, test_create_user):
+    await test_create_user
+    created_activity = await test_create_activity
     assert created_activity.activity == "Running"
 
 
-def test_get_activity(setup_teardown, test_create_activity):
-    retrieved_activity = get_activity(test_create_activity.id)
+@pytest.mark.anyio
+async def test_get_activity(setup_teardown, test_create_activity, test_create_user):
+    await test_create_user
+    created_activity = await test_create_activity
+    retrieved_activity = await get_activity(created_activity.id)
     assert retrieved_activity.activity == "Running"
 
 
-def test_update_activity(setup_teardown, test_create_activity):
+@pytest.mark.anyio
+async def test_update_activity(setup_teardown, test_create_activity, test_create_user):
+    await test_create_user
+    created_activity = await test_create_activity
     new_activity_data = ActivityUpdate(
-        activity="Swimming", duration="45 minutes", kcal_burnt=400
+        activity="Swimming", duration="00:45:00", kcal_burned=400
     )
-    updated_activity = update_activity(test_create_activity.id, new_activity_data)
+    updated_activity = await update_activity(created_activity.id, new_activity_data)
     assert updated_activity.activity == "Swimming"
 
 
-def test_delete_activity(setup_teardown, test_create_activity):
-    result = delete_activity(test_create_activity.id)
+@pytest.mark.anyio
+async def test_delete_activity(setup_teardown, test_create_activity, test_create_user):
+    await test_create_user
+    created_activity = await test_create_activity
+    result = await delete_activity(created_activity.id)
     assert result == 1

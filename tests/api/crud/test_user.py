@@ -17,30 +17,34 @@ def test_create_user():
     return create_user(user)
 
 
-def test_create_user_(setup_teardown, test_create_user):
-    created_user = test_create_user
+@pytest.mark.anyio
+async def test_create_user_(setup_teardown, test_create_user):
+    created_user = await test_create_user
     assert created_user.nickname == "testuser"
 
 
-def test_get_user(setup_teardown, test_create_user):
-    test_create_user
-    retrieved_user = get_user("testuser")
+@pytest.mark.anyio
+async def test_get_user(setup_teardown, test_create_user):
+    await test_create_user
+    retrieved_user = await get_user("testuser")
     assert retrieved_user.nickname == "testuser"
 
 
-def test_update_user(setup_teardown, test_create_user):
-    test_create_user
+@pytest.mark.anyio
+async def test_update_user(setup_teardown, test_create_user):
+    await test_create_user
 
     new_user_data = UserUpdate(
         name="UpdatedName", surname="UpdatedSurname", email="updated@example.com"
     )
-    updated_user = update_user("testuser", new_user_data)
+    updated_user = await update_user("testuser", new_user_data)
     assert updated_user.name == "UpdatedName"
     assert updated_user.surname == "UpdatedSurname"
     assert updated_user.email == "updated@example.com"
 
 
-def test_delete_user(setup_teardown, test_create_user):
-    test_create_user
-    result = delete_user("testuser")
+@pytest.mark.anyio
+async def test_delete_user(setup_teardown, test_create_user):
+    await test_create_user
+    result = await delete_user("testuser")
     assert result == 1

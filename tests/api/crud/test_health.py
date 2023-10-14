@@ -16,7 +16,7 @@ def test_create_user():
         "join_date": "2023-01-01",
     }
     user = UserCreate(**user_data)
-    create_user(user)
+    return create_user(user)
 
 
 @pytest.fixture
@@ -32,24 +32,35 @@ def test_create_health(setup_teardown, test_create_user):
     return create_health(health)
 
 
-def test_create_health_(setup_teardown, test_create_health):
-    created_health = test_create_health
+@pytest.mark.anyio
+async def test_create_health_(setup_teardown, test_create_health, test_create_user):
+    await test_create_user
+    created_health = await test_create_health
     assert created_health.nickname == "testuser"
 
 
-def test_get_health(setup_teardown, test_create_health):
-    retrieved_health = get_health(test_create_health.id)
+@pytest.mark.anyio
+async def test_get_health(setup_teardown, test_create_health, test_create_user):
+    await test_create_user
+    health = await test_create_health
+    retrieved_health = await get_health(health.id)
     assert retrieved_health.nickname == "testuser"
 
 
-def test_update_health(setup_teardown, test_create_health):
+@pytest.mark.anyio
+async def test_update_health(setup_teardown, test_create_health, test_create_user):
+    await test_create_user
+    health = await test_create_health
     new_health_data = HealthUpdate(blood_pressure="130/85", pulse=75)
-    updated_health = update_health(test_create_health.id, new_health_data)
+    updated_health = await update_health(health.id, new_health_data)
     assert updated_health.blood_pressure == "130/85"
     assert updated_health.pulse == 75
     assert updated_health.weight == 70.5
 
 
-def test_delete_health(setup_teardown, test_create_health):
-    result = delete_health(test_create_health.id)
+@pytest.mark.anyio
+async def test_delete_health(setup_teardown, test_create_health, test_create_user):
+    await test_create_user
+    health = await test_create_health
+    result = await delete_health(health.id)
     assert result == 1

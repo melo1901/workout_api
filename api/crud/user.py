@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from api.database import session
 
 
-def create_user(user: UserCreate):
+async def create_user(user: UserCreate):
     new_user = Users(**user.model_dump())
     try:
         session.add(new_user)
@@ -16,7 +16,7 @@ def create_user(user: UserCreate):
     return new_user
 
 
-def get_user(nickname: str) -> UserResponse:
+async def get_user(nickname: str) -> UserResponse:
     user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
         return user
@@ -24,7 +24,7 @@ def get_user(nickname: str) -> UserResponse:
         raise HTTPException(status_code=404, detail="User not found")
 
 
-def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
+async def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
     user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
         for key, value in new_user_data.model_dump(exclude_unset=True).items():
@@ -35,7 +35,7 @@ def update_user(nickname: str, new_user_data: UserUpdate) -> UserUpdate:
         raise HTTPException(status_code=404, detail="User not found")
 
 
-def delete_user(nickname: str) -> int:
+async def delete_user(nickname: str) -> int:
     user = session.query(Users).filter_by(nickname=nickname).first()
     if user:
         session.delete(user)

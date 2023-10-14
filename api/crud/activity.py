@@ -5,7 +5,7 @@ from api.database import session
 from sqlalchemy.exc import IntegrityError
 
 
-def create_activity(activity: ActivityCreate):
+async def create_activity(activity: ActivityCreate):
     new_activity = Activity(**activity.model_dump())
     try:
         session.add(new_activity)
@@ -17,41 +17,32 @@ def create_activity(activity: ActivityCreate):
     return new_activity
 
 
-def get_activity(activity_id: int):
+async def get_activity(activity_id: int):
     activity = session.query(Activity).filter_by(id=activity_id).first()
     if activity:
         return activity
     raise HTTPException(status_code=404, detail="Activity not found")
 
 
-def get_user_activities(user_nickname: str):
-    user = session.query(Users).filter_by(nickname=user_nickname).first()
+async def get_user_activities(user_nickname: str):
+    user = session.query(Users).filter_by(nickname=user_nickname).all()
 
     if user:
-        return user.activities
+        return session.query(Activity).filter_by(nickname=user_nickname).all()
     raise HTTPException(status_code=404, detail="User not found")
 
 
-def update_activity(activity_id: int, new_activity_data: ActivityUpdate):
+async def update_activity(activity_id: int, new_activity_data: ActivityUpdate):
     activity = session.query(Activity).filter_by(id=activity_id).first()
     if activity:
-        if new_activity_data.activity is not None:
-            activity.activity = new_activity_data.activity
-        if new_activity_data.duration is not None:
-            activity.duration = new_activity_data.duration
-        if new_activity_data.kcal_burnt is not None:
-            activity.kcal_burnt = new_activity_data.kcal_burnt
-        if new_activity_data.date is not None:
-            activity.date = new_activity_data.date
-
+        for key, value in new_activity_data.model_dump(exclude_unset=True).items():
+            setattr(activity, key, value)
         session.commit()
-        session.refresh(activity)
         return activity
-    else:
-        raise HTTPException(status_code=404, detail="Activity not found")
+    raise HTTPException(status_code=404, detail="Activity not found")
 
 
-def delete_activity(activity_id: int):
+async def delete_activity(activity_id: int):
     activity = session.query(Activity).filter_by(id=activity_id).first()
     if activity:
         session.delete(activity)

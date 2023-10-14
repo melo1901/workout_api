@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 
 
-def create_health(health: HealthCreate):
+async def create_health(health: HealthCreate):
     new_health = Health(**health.model_dump())
     try:
         session.add(new_health)
@@ -15,14 +15,14 @@ def create_health(health: HealthCreate):
     return new_health
 
 
-def get_health(health_id: int):
+async def get_health(health_id: int):
     health = session.query(Health).filter_by(id=health_id).first()
     if health:
         return health
     raise HTTPException(status_code=404, detail="Health record not found")
 
 
-def update_health(health_id: int, new_health_data: HealthUpdate):
+async def update_health(health_id: int, new_health_data: HealthUpdate):
     health = session.query(Health).filter_by(id=health_id).first()
     if health:
         for key, value in new_health_data.model_dump(exclude_unset=True).items():
@@ -31,7 +31,7 @@ def update_health(health_id: int, new_health_data: HealthUpdate):
     return health
 
 
-def delete_health(health_id: int):
+async def delete_health(health_id: int):
     health = session.query(Health).filter_by(id=health_id).first()
     if health:
         session.delete(health)
