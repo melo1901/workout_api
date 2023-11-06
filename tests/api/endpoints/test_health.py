@@ -48,6 +48,17 @@ async def test_create_health(client: AsyncClient, setup_teardown, create_user_fi
 
 
 @pytest.mark.anyio
+async def test_create_health_wrong_data(client: AsyncClient, setup_teardown):
+    health_data = {
+        "nickname": "testuser",
+        "blood_pressure": "120/80",
+        "pulse": 80,
+    }
+    response = await client.post("/health", json=health_data)
+    assert response.status_code == 422
+
+
+@pytest.mark.anyio
 async def test_get_health(
     client: AsyncClient, setup_teardown, create_health_fixture, create_user_fixture
 ):
@@ -82,6 +93,21 @@ async def test_update_health(
 
 
 @pytest.mark.anyio
+async def test_update_health_not_found(
+    client: AsyncClient, setup_teardown, create_health_fixture, create_user_fixture
+):
+    await create_user_fixture
+    await create_health_fixture
+    health_data = {
+        "nice": "testuser",
+        "blood_pressure": "120/90",
+        "pulse": "83",
+    }
+    response = await client.put("/health/2", json=health_data)
+    assert response.status_code == 404
+
+
+@pytest.mark.anyio
 async def test_delete_health(
     client: AsyncClient, setup_teardown, create_health_fixture, create_user_fixture
 ):
@@ -90,3 +116,14 @@ async def test_delete_health(
     response = await client.delete("/health/1")
     assert response.status_code == 200
     assert response.json() == 1
+
+
+@pytest.mark.anyio
+async def test_delete_health_not_found(
+    client: AsyncClient, setup_teardown, create_health_fixture, create_user_fixture
+):
+    await create_user_fixture
+    await create_health_fixture
+    response = await client.delete("/health/3")
+    assert response.status_code == 200
+    assert response.json() == 0

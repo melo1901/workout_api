@@ -27,7 +27,6 @@ def test_create_health(setup_teardown, test_create_user):
         "blood_pressure": "120/80",
         "pulse": 70,
         "weight": 70.5,
-        "date": "2023-01-01",
     }
     health = HealthCreate(**health_data)
     return create_health(health)

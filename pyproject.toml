@@ -16,6 +16,7 @@ pytest = "^7.4.2"
 python-dotenv = "^1.0.0"
 pre-commit = "^3.4.0"
 httpx = "^0.25.0"
+coverage = "^7.3.2"
 
 
 [build-system]

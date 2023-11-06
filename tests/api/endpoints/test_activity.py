@@ -53,6 +53,18 @@ async def test_create_activity(
 
 
 @pytest.mark.anyio
+async def test_create_activity_wrong_data(client: AsyncClient, setup_teardown):
+    activity_data = {
+        "nickname": "testuser",
+        "activity": "Running",
+        "duration": "00:30:00",
+        "kcal_burned": 100,
+    }
+    response = await client.post("/activities", json=activity_data)
+    assert response.status_code == 422
+
+
+@pytest.mark.anyio
 async def test_get_activities(
     client: AsyncClient, setup_teardown, create_activity_fixture, create_user_fixture
 ):
@@ -80,6 +92,17 @@ async def test_update_activity(
 
 
 @pytest.mark.anyio
+async def test_update_activity_wrong_data(
+    client: AsyncClient, setup_teardown, create_activity_fixture, create_user_fixture
+):
+    await create_user_fixture
+    await create_activity_fixture
+    response = await client.put("/activities/2", json={"kcal_burned": "100"})
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Activity not found"
+
+
+@pytest.mark.anyio
 async def test_delete_activity(
     client: AsyncClient, setup_teardown, create_activity_fixture, create_user_fixture
 ):
@@ -88,3 +111,14 @@ async def test_delete_activity(
     response = await client.delete("/activities/1")
     assert response.status_code == 200
     assert response.json() == 1
+
+
+@pytest.mark.anyio
+async def test_delete_activity_wrong_data(
+    client: AsyncClient, setup_teardown, create_activity_fixture, create_user_fixture
+):
+    await create_user_fixture
+    await create_activity_fixture
+    response = await client.delete("/activities/2")
+    assert response.status_code == 200
+    assert response.json() == 0
