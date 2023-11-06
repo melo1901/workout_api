@@ -1,6 +1,8 @@
 import pytest
+from api.crud.activity import create_activity
 from api.crud.health import create_health
-from api.crud.user import create_user, get_user, update_user, delete_user
+from api.crud.user import create_user
+from api.models.activity import ActivityCreate
 from api.models.health import HealthCreate
 from api.models.user import UserCreate
 
@@ -29,6 +31,19 @@ def create_health_fixture():
     }
     health = HealthCreate(**health_data)
     return create_health(health)
+
+
+@pytest.fixture
+async def create_activity_fixture(setup_teardown, create_user_fixture):
+    activity_data = {
+        "nickname": "testuser",
+        "activity": "Running",
+        "duration": "00:30:00",
+        "kcal_burned": 300,
+        "date": "2023-01-01",
+    }
+    activity = ActivityCreate(**activity_data)
+    return create_activity(activity)
 
 
 @pytest.mark.anyio
@@ -141,4 +156,21 @@ async def test_get_user_health_history(
 @pytest.mark.anyio
 async def test_get_user_health_history_wrong_nickname(client, setup_teardown):
     response = await client.get("/users/testuser/health")
+    assert response.status_code == 404
+
+
+@pytest.mark.anyio
+async def test_get_user_activities(
+    client, setup_teardown, create_user_fixture, create_activity_fixture
+):
+    await create_user_fixture
+    await create_activity_fixture
+    response = await client.get("/users/testuser/activities")
+    assert response.status_code == 200
+    assert response.json()[0]["nickname"] == "testuser"
+
+
+@pytest.mark.anyio
+async def test_get_user_activities_wrong_nickname(client, setup_teardown):  # noqa
+    response = await client.get("/users/testuser/activities")
     assert response.status_code == 404

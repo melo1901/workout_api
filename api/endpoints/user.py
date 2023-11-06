@@ -1,5 +1,3 @@
-from json import JSONDecodeError
-from fastapi import HTTPException
 from fastapi.routing import APIRouter
 from api.crud import user as crud
 from api.models.activity import ActivityResponse

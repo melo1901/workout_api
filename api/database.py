@@ -14,8 +14,11 @@ try:
 except KeyError as e:
     raise Exception(f"Missing required environment variable: {e}")
 
-engine = create_engine(db_url)
-Session = sessionmaker(bind=engine)
-session = Session()
+try:
+    engine = create_engine(db_url)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+except Exception as e:
+    raise Exception(f"Failed to connect to database: {e}")
 
 base.Base.metadata.create_all(engine)

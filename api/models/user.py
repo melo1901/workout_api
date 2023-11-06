@@ -26,19 +26,6 @@ class Users(Base):
         self.email = email
         self.join_date = join_date
 
-    def __repr__(self):
-        return (
-            "<Users(nickname='%s', name='%s', surname='%s', height='%s' email='%s', join_date='%s')>"
-            % (
-                self.nickname,
-                self.name,
-                self.surname,
-                self.height,
-                self.email,
-                self.join_date,
-            )
-        )
-
 
 class UserCreate(BaseModel):
     nickname: str

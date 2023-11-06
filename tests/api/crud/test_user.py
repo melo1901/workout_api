@@ -102,7 +102,7 @@ async def test_update_user_not_found(setup_teardown, test_create_user):
         name="UpdatedName", surname="UpdatedSurname", email="updated@example.com"
     )
     try:
-        await update_user("testuser", new_user_data)
+        await update_user("testuser2", new_user_data)
     except HTTPException as e:
         assert e.status_code == 404
         assert e.detail == "User not found"

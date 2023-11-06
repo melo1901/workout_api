@@ -23,12 +23,6 @@ class Activity(Base):
         self.kcal_burned = kcal_burned
         self.date = date
 
-    def __repr__(self):
-        return (
-            "<Activity(nickname='%s', activity='%s', duration='%s', kcal_burned='%s', date='%s')>"
-            % (self.nickname, self.activity, self.duration, self.kcal_burned, self.date)
-        )
-
 
 class ActivityBase(BaseModel):
     nickname: str

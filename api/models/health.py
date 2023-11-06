@@ -21,17 +21,6 @@ class Health(Base):
         self.pulse = pulse
         self.weight = weight
 
-    def __repr__(self):
-        return (
-            "<Health(nickname='%s', blood_pressure='%s', pulse='%s', weight='%s')>"
-            % (
-                self.nickname,
-                self.blood_pressure,
-                self.pulse,
-                self.weight,
-            )
-        )
-
 
 class HealthBase(BaseModel):
     nickname: str

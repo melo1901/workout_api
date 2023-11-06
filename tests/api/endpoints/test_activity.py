@@ -65,6 +65,21 @@ async def test_create_activity_wrong_data(client: AsyncClient, setup_teardown):
 
 
 @pytest.mark.anyio
+async def test_get_activity(
+    client: AsyncClient, setup_teardown, create_user_fixture, create_activity_fixture
+):
+    await create_user_fixture
+    await create_activity_fixture
+    response = await client.get("/activities/1")
+    assert response.status_code == 200
+    assert response.json()["nickname"] == "testuser"
+    assert response.json()["activity"] == "Running"
+    assert response.json()["duration"] == "00:30:00"
+    assert response.json()["kcal_burned"] == 100
+    assert response.json()["date"] == "2023-01-01"
+
+
+@pytest.mark.anyio
 async def test_get_activities(
     client: AsyncClient, setup_teardown, create_activity_fixture, create_user_fixture
 ):
@@ -77,6 +92,17 @@ async def test_get_activities(
     assert response.json()[0]["duration"] == "00:30:00"
     assert response.json()[0]["kcal_burned"] == 100
     assert response.json()[0]["date"] == "2023-01-01"
+
+
+@pytest.mark.anyio
+async def test_get_activities_wrong_nickname(
+    client: AsyncClient, setup_teardown, create_activity_fixture, create_user_fixture
+):
+    await create_user_fixture
+    await create_activity_fixture
+    response = await client.get("/activities/user/testuser2")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "User not found"
 
 
 @pytest.mark.anyio

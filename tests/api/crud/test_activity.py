@@ -71,7 +71,7 @@ async def test_create_activity_wrong_user(setup_teardown, test_create_user):
 async def test_create_activity_wrong_data(setup_teardown, test_create_user):
     await test_create_user
     activity_data = {
-        "nickname": "testuser",
+        "nickname": "testuser2",
         "activity": "Running",
         "duration": "00:30:00",
         "kcal_burned": "300",
