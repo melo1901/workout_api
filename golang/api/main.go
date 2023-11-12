@@ -1,16 +1,20 @@
 package main
 
 import (
+	"example/workout_api_golang/internal/controllers"
 	"example/workout_api_golang/internal/database"
-	models "example/workout_api_golang/internal/models"
+	"example/workout_api_golang/internal/models"
+	"fmt"
 	"log"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	loadEnv()
 	loadDatabase()
+	serveApplication()
 }
 
 func loadDatabase() {
@@ -24,4 +28,16 @@ func loadEnv() {
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
+}
+
+func serveApplication() {
+	router := gin.Default()
+
+	publicRoutes := router.Group("/users")
+	publicRoutes.POST("/", controllers.AddUser)
+	publicRoutes.GET("/:nickname", controllers.GetUser)
+	publicRoutes.PUT("/:nickname", controllers.UpdateUser)
+
+	router.Run(":8000")
+	fmt.Println("Server is running on port 8000")
 }
